@@ -143,7 +143,7 @@ const frame = (tl, s, {fadeIn = true, fadeOut = true} = {}) => {
   const el = sec(s.id);
   if (fadeIn && s.start > 0) tl.fromTo(el, {opacity: 0}, {opacity: 1, duration: 0.4, ease: 'none'}, s.start - 0.4);
   else tl.set(el, {opacity: 1}, s.start);
-  if (fadeOut) tl.to(el, {opacity: 0, duration: 0.4, ease: 'none'}, s.end - 0.4);
+  if (fadeOut) tl.fromTo(el, {opacity: 1}, {opacity: 0, duration: 0.4, ease: 'none', immediateRender: false}, s.end - 0.4);
 };
 const headIn = (tl, s, delay = 0) => {
   reveal(tl, q(s.id, '.ag-en'), s.start + delay, {dur: 0.9, stagger: 0.03, from: {opacity: 0, y: 30, filter: 'blur(12px)'}});
@@ -185,7 +185,7 @@ function buildTerminal(tl, s) {
     if (k > 0) { tl.set(p, {opacity: 0}, s.start); tl.set(p, {opacity: 1}, t - 0.3); }
     const lines = p.querySelectorAll('.ag-line');
     lineIn(tl, lines, t, 0.2);
-    if (k < panes.length - 1) tl.to(p, {opacity: 0, duration: 0.3, ease: 'none'}, at(s, 'p' + (k + 1)) - 0.3);
+    if (k < panes.length - 1) tl.fromTo(p, {opacity: 1}, {opacity: 0, duration: 0.3, ease: 'none', immediateRender: false}, at(s, 'p' + (k + 1)) - 0.3);
   });
   if (c.qr) {
     tl.fromTo(q(s.id, '.ag-qr'), {opacity: 0, scale: 0.92}, {opacity: 1, scale: 1, duration: 0.7, ease: 'expo.out'}, at(s, 'qr'));
@@ -198,7 +198,7 @@ function buildTerminal(tl, s) {
   if (c.phone) {
     const phone = q(s.id, '.ag-phone');
     tl.fromTo(phone, {opacity: 0, y: 80, scale: 0.96}, {opacity: 1, y: 0, scale: 1, duration: 1.0, ease: 'expo.out'}, at(s, 'phone'));
-    tl.to(phone, {scale: 1.03, duration: s.end - at(s, 'phone') - 1.5, ease: 'none'}, at(s, 'phone') + 1.0);
+    tl.fromTo(phone, {scale: 1}, {scale: 1.03, duration: s.end - at(s, 'phone') - 1.5, ease: 'none', immediateRender: false}, at(s, 'phone') + 1.0);
     if (has(s, 'ring')) tl.fromTo(q(s.id, '.ag-hl'), {opacity: 0, scale: 1.06}, {opacity: 1, scale: 1, duration: 0.5, ease: 'expo.out'}, at(s, 'ring'));
   }
 }
@@ -208,7 +208,7 @@ function buildScreenshot(tl, s) {
   const win = q(s.id, c.frame === 'phone' ? '.ag-phone' : '.ag-browser');
   const enter = at(s, 'enter');
   tl.fromTo(win, {opacity: 0, y: 60, scale: 0.97}, {opacity: 1, y: 0, scale: 1, duration: 1.0, ease: 'expo.out'}, enter);
-  tl.to(win, {scale: 1.06, y: -20, duration: s.end - enter - 1.0, ease: 'none'}, enter + 1.0);  // slow push so the shot is never still
+  tl.fromTo(win, {scale: 1, y: 0}, {scale: 1.06, y: -20, duration: s.end - enter - 1.0, ease: 'none', immediateRender: false}, enter + 1.0);  // slow push so the shot is never still
   if (has(s, 'ring')) tl.fromTo(q(s.id, '.ag-hl'), {opacity: 0, scale: 1.25}, {opacity: 1, scale: 1, duration: 0.6, ease: 'expo.out'}, at(s, 'ring'));
 }
 function buildEnd(tl, s) {

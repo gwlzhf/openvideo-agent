@@ -58,6 +58,14 @@ examples/           示例 spec 与占位截图
 SKILL.md            Claude Code skill 说明
 ```
 
+## 渲染并行
+
+`engine/render-film.mjs` 默认用 1 个浏览器页面逐帧截图，输出逐字节可重复。加 `--jobs N` 可以用 N 个页面并行截图（每个页面是独立的 Chromium 进程，Node 主线程只负责调度，不需要 worker_threads）：
+
+- 8 核 CPU 上 26 秒片段的实测：1 页面 42 秒，4 页面 27 秒（约 1.6 倍）。
+- 代价：并行结果和单页结果可能有亚像素级的差异（实测 22 帧 PSNR 约 73–88 dB，肉眼难以分辨）。原因是影片里的 GSAP 时间线有部分状态依赖之前的 seek 路径，冷启动页面跳到中途的画面会略有不同。模板里已经把 `tl.to` 改为显式起点的 `fromTo`，但这一处仍需要进一步排查。
+- 建议：预览和草稿用 `--jobs 4`；最终交付用默认的 1。
+
 ## 配乐模板库
 
 `templates/music/`：`soft-marimba`（轻柔马林巴，默认，不抢人声）、`douyin-bounce`（抖音魔性卡点，切点有上升音效与重击）、`ode-to-joy`（贝多芬《欢乐颂》，公版曲目）。全部由代码合成（`audio-kit.mjs`，无第三方依赖），读 `plan.json` 的时长。新增风格：加一个同接口的 `.mjs` 并登记到 `templates/music/README.md`。
