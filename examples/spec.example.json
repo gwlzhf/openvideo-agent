@@ -1,0 +1,67 @@
+{
+  "name": "demo",
+  "product": "示例应用 命令行安装与扫码配对",
+  "voice": "zh-CN-XiaoxiaoNeural",
+  "rate": "+5%",
+  "music": "soft-marimba",
+  "music_gain": 0.5,
+  "privacy_terms": [],
+  "notCovered": ["macOS 与 Linux 的启动方式"],
+  "shots": [
+    {
+      "id": "intro", "kind": "title", "seconds": 8,
+      "headlineEn": "DemoApp",
+      "headline": "任务完成，通知直达手机",
+      "description": "讲什么：用命令行装好示例应用并配对手机。解决什么问题：离开电脑后不知道任务是否跑完。",
+      "notice": {"title": "任务完成", "tag": "通知", "body": "手机收到：构建已完成"},
+      "narration": "任务跑完，通知直达手机，不用一直守着电脑。"
+    },
+    {
+      "id": "download", "kind": "cards", "seconds": 6, "tag": "01 · 下载",
+      "headlineEn": "Unzip on any system", "headline": "按系统下载，解压即用",
+      "description": "按系统选择安装包，解压后在终端运行。",
+      "cards": [
+        {"title": "Windows", "sub": "amd64", "text": "demo-windows-amd64.zip", "accent": "start.bat"},
+        {"title": "macOS", "sub": "arm64 / amd64", "text": "demo-darwin-arm64.zip", "accent": "./start.sh"},
+        {"title": "Linux", "sub": "amd64", "text": "demo-linux-amd64.zip", "accent": "./start.sh"}
+      ],
+      "note": "安装包已附带依赖，无需另装",
+      "narration": "按系统选择安装包，解压后在终端运行。"
+    },
+    {
+      "id": "install", "kind": "terminal", "seconds": 10, "tag": "02 · 安装", "prompt": "PS>", "command": "demo",
+      "headlineEn": "Run and install", "headline": "运行 demo，选择安装",
+      "description": "首次输入激活码，再选择要接入的客户端。",
+      "panes": [
+        ["你要做什么？", "> 安装", "  配对手机", "  退出"],
+        ["# 安装 · 1/2 · 选择客户端", "安装到哪些客户端？", "> 全部", "  客户端 A", "  客户端 B"]
+      ],
+      "done": "安装完成，重启客户端即可生效",
+      "narration": "运行 demo，首次输入激活码，再选择客户端。"
+    },
+    {
+      "id": "pair", "kind": "terminal", "seconds": 10, "theme": "light", "tag": "03 · 配对手机", "qr": true,
+      "headlineEn": "Scan to pair", "headline": "选择配对手机，扫码启用通知",
+      "description": "终端显示二维码，手机扫码后点击“启用通知”。",
+      "panes": [["> 配对手机"]],
+      "footer": "保持窗口运行",
+      "phone": {"image": "shots/phone.png", "ring": {"x": 5, "y": 21, "w": 90, "h": 8, "color": "green"}},
+      "narration": "选择配对手机，终端出二维码，手机扫码并启用通知。"
+    },
+    {
+      "id": "dashboard", "kind": "screenshot", "seconds": 6, "tag": "04 · 管理页", "frame": "browser",
+      "url": "http://localhost:9876/", "image": "shots/dashboard.png",
+      "ring": {"x": 78, "y": 12, "w": 18, "h": 6},
+      "headlineEn": "Manage devices", "headline": "添加、删除设备，随时测试",
+      "description": "在管理页添加或删除设备，并发送测试通知。",
+      "narration": "在管理页添加或删除设备，随时测试通知。"
+    },
+    {
+      "id": "outro", "kind": "end", "seconds": 6,
+      "headlineEn": "Install in a minute", "headline": "下载、安装、扫码，通知到手机",
+      "description": "解压 → 运行 demo → 安装 → 扫码配对",
+      "chips": ["demo", "安装 → 选择客户端", "配对手机 → 扫码"],
+      "narration": "下载、安装、扫码，通知就到手机了。"
+    }
+  ]
+}

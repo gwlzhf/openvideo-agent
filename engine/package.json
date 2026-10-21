@@ -1,0 +1,21 @@
+{
+  "name": "product-video-engine",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node bundle-film.mjs",
+    "preview": "node preview-film.mjs",
+    "render": "node render-film.mjs",
+    "stills": "node capture-stills.mjs",
+    "cover": "node render-covers.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.27.3",
+    "gsap": "3.15.0",
+    "playwright": "1.58.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "three": "0.186.1"
+  }
+}

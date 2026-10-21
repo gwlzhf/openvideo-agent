@@ -1,0 +1,123 @@
+/* Film layer, vertical 9:16 (Douyin / Shorts). Headline block plus one product visual per shot. Generic: shot backgrounds come from
+   .theme-dark / .theme-light and the intro is styled via .type-title. */
+* { box-sizing:border-box; }
+html,body { margin:0; background:#000; }
+#film { position:relative; width:1080px; height:1920px; overflow:hidden; background:#f3f5fa; color:#0f172a; font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif; }
+/* the film clock owns motion: freeze CSS transitions/animations so any frame renders in isolation */
+#film *, #film *::before, #film *::after { transition:none !important; animation-duration:0s !important; animation-delay:0s !important; }
+.shot { position:absolute; inset:0; overflow:hidden; opacity:0; visibility:hidden; }
+.split { display:inline-block; white-space:pre-wrap; }
+.split .u { display:inline-block; }
+
+/* stages: light (product) and dark (terminal) alternate */
+.ag-stage { position:absolute; inset:0; display:flex; flex-direction:column; gap:48px; padding:170px 96px 380px; }
+
+/* headline block */
+.ag-col { position:relative; display:flex; flex-direction:column; flex:none; }
+.ag-col.center { align-items:center; text-align:center; }
+.ag-tag { align-self:flex-start; font-size:34px; font-weight:700; padding:10px 24px; border-radius:999px; margin-bottom:28px; }
+.ag-en { font-family:Georgia,"Times New Roman",serif; font-size:118px; line-height:1.02; letter-spacing:-0.01em; }
+.ag-zh { font-size:82px; line-height:1.25; font-weight:700; margin-top:22px; }
+.ag-desc { font-size:40px; line-height:1.5; margin:26px 0 0; }
+.ag-col.center .ag-desc { max-width:900px; }
+.light .ag-en, .light .ag-zh { color:#0f172a; }
+.light .ag-desc { color:#475569; }
+.light .ag-tag { background:#e8f0ff; color:#2563eb; }
+.dark .ag-en { color:#f8fafc; }
+.dark .ag-zh { color:#e2e8f0; }
+.dark .ag-desc { color:#94a3b8; }
+.dark .ag-tag { background:rgba(96,165,250,.16); color:#93c5fd; }
+.type-title .ag-en { font-size:150px; }
+.type-title .ag-zh { font-size:92px; }
+.type-title .ag-col { margin-top:auto; }
+
+/* cards: the product's card language (white, hairline border, soft shadow) */
+.ag-card { background:#fff; border:1px solid #e3e8f1; border-radius:22px; box-shadow:0 10px 30px rgba(15,23,42,.08); position:relative; }
+.ag-pill { display:inline-block; font-size:30px; font-weight:700; padding:6px 18px; border-radius:999px; }
+.ag-pill.blue { background:#e8f0ff; color:#2563eb; }
+.ag-pill.green { background:#e7f7ee; color:#15803d; }
+.ag-pill.amber { background:#fef3c7; color:#b45309; }
+
+.ag-notice { width:100%; padding:40px 44px; margin-bottom:auto; }
+.ag-intro-notice { border-left:8px solid #2563eb; }
+.ag-notice-top { display:flex; align-items:center; gap:20px; }
+.ag-bell { width:64px; height:64px; border-radius:18px; background:#e8f0ff; display:flex; align-items:center; justify-content:center; }
+.ag-notice-title { font-size:42px; font-weight:700; color:#0f172a; margin-right:auto; }
+.ag-notice-body { font-size:36px; color:#475569; margin-top:22px; padding-left:84px; }
+
+/* activate: command rows */
+.ag-activate { width:100%; padding:20px 40px; }
+.ag-check-row { display:flex; align-items:center; gap:20px; padding:34px 0; border-bottom:1px solid #eef2f7; font-size:36px; color:#0f172a; flex-wrap:wrap; }
+.ag-check-last { border-bottom:none; }
+.ag-check-name { margin-right:auto; }
+.ag-cmd { font-family:Consolas,"Cascadia Mono",monospace; font-size:34px; }
+
+/* install: platform rows on dark */
+.ag-platforms { display:flex; flex-direction:column; gap:18px; }
+.ag-platform { padding:26px 32px; display:flex; flex-wrap:wrap; align-items:center; gap:10px 22px; background:#111a2e; border:1px solid #1e293b; box-shadow:none; }
+.ag-platform-os { font-size:38px; font-weight:700; color:#f8fafc; width:230px; }
+.ag-platform-arch { display:block; font-size:24px; font-weight:400; color:#64748b; margin-top:4px; }
+.ag-platform-zip { font-family:Consolas,"Cascadia Mono",monospace; font-size:24px; color:#cbd5e1; flex:1; min-width:340px; }
+.ag-platform-launch { font-family:Consolas,monospace; font-size:28px; color:#4ade80; }
+
+/* terminal windows: normal flow, full width */
+.ag-term { position:relative; width:100%; background:#0b1020; border:1px solid #1e293b; border-radius:22px; overflow:hidden; box-shadow:0 24px 50px rgba(2,6,23,.3); flex:none; }
+.ag-term-bar { height:50px; background:#111a2e; display:flex; align-items:center; gap:12px; padding:0 22px; }
+.ag-term-bar i { width:16px; height:16px; border-radius:50%; background:#334155; display:block; }
+.ag-term-body { padding:30px 36px; font-family:Consolas,"Cascadia Mono",monospace; font-size:34px; line-height:1.6; color:#cbd5e1; }
+.ag-term-install .ag-term-body, .ag-term-use .ag-term-body { font-size:34px; }
+.ag-line { white-space:pre-wrap; word-break:break-all; }
+.ag-prompt { color:#4ade80; margin-right:18px; }
+.ag-muted { color:#64748b; }
+.ag-link { color:#93c5fd; }
+.ag-done { color:#4ade80; margin-top:14px; }
+.ag-note-line { margin-top:6px; }
+
+/* start/devices: phone and browser with the real screenshots */
+.ag-phone { position:relative; width:440px; margin:0 auto; padding:14px; background:#111827; border-radius:60px; box-shadow:0 30px 60px rgba(15,23,42,.25); flex:none; }
+.ag-phone-screen { position:relative; border-radius:46px; overflow:hidden; line-height:0; }
+.ag-phone-screen img { width:100%; display:block; }
+.ag-ring { position:absolute; top:21.4%; left:4%; width:92%; height:10.5%; border:6px solid #16a34a; border-radius:20px; box-shadow:0 0 0 8px rgba(22,163,74,.18); opacity:0; }
+
+.ag-browser { position:relative; width:100%; background:#fff; border:1px solid #dfe5ee; border-radius:22px; overflow:hidden; box-shadow:0 30px 60px rgba(15,23,42,.18); flex:none; }
+.ag-browser-bar { height:54px; background:#eef2f7; display:flex; align-items:center; gap:12px; padding:0 20px; }
+.ag-browser-bar i { width:15px; height:15px; border-radius:50%; background:#cbd5e1; display:block; }
+.ag-url { margin-left:14px; flex:1; height:36px; background:#fff; border-radius:10px; font-family:Consolas,monospace; font-size:22px; color:#64748b; display:flex; align-items:center; padding:0 16px; }
+.ag-browser-screen { position:relative; line-height:0; }
+.ag-browser-screen img { width:100%; display:block; }
+.ag-ring-2 { position:absolute; left:65.2%; top:33.8%; width:11.4%; height:5.2%; border:6px solid #2563eb; border-radius:14px; opacity:0; }
+.ag-ring-3 { position:absolute; left:3%; top:88.6%; width:15%; height:9.2%; border:6px solid #2563eb; border-radius:14px; opacity:0; }
+
+/* use: client grid on dark */
+.ag-clients { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.ag-client { padding:28px 30px; background:#111a2e; border:1px solid #1e293b; box-shadow:none; }
+.ag-client-name { font-size:38px; font-weight:700; color:#f8fafc; }
+.ag-client-path { font-family:Consolas,"Cascadia Mono",monospace; font-size:24px; color:#94a3b8; margin-top:10px; word-break:break-all; }
+
+/* close: command chips */
+.ag-chips { display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:44px; }
+.ag-chip { font-family:Consolas,"Cascadia Mono",monospace; font-size:36px; color:#0f172a; background:#fff; border:1px solid #e3e8f1; border-radius:18px; padding:20px 40px; box-shadow:0 8px 24px rgba(15,23,42,.06); }
+
+/* first-frame poster: the completed intro, shown for the first 0.3 s then faded out by the builder */
+#poster { position:absolute; inset:0; width:100%; height:100%; z-index:99; pointer-events:none; }
+
+/* v0.8 CLI flow: menu terminal, QR terminal, phone beside it */
+.ag-term-menu .ag-term-body, .ag-term-qr .ag-term-body { font-size:28px; line-height:1.6; }
+.ag-stack { display:grid; }
+.ag-pane { grid-area:1/1; }
+.ag-sel { color:#60a5fa; }
+.ag-pair-row { display:flex; align-items:flex-start; gap:28px; }
+.ag-term-qr { width:auto; flex:1; }
+.ag-qr { display:grid; grid-template-columns:repeat(25,1fr); width:300px; aspect-ratio:1; margin:22px auto; padding:10px; background:#fff; border-radius:8px; }
+.ag-qr i { display:block; background:#fff; }
+.ag-qr i.on { background:#0b1020; }
+.ag-latin { white-space:nowrap; }
+.ag-pair-row .ag-phone { width:320px; }
+.ag-term-menu .ag-term-body { font-size:36px; }
+.ag-term-qr .ag-term-body { font-size:26px; }
+.ag-pair-row .ag-phone { width:340px; }
+
+.theme-dark { background:#0b1020; }
+.theme-light { background:#f3f5fa; }
+.ag-hl { position:absolute; border:6px solid #2563eb; border-radius:14px; opacity:0; }
+.ag-hl.green { border-color:#16a34a; box-shadow:0 0 0 8px rgba(22,163,74,.18); }

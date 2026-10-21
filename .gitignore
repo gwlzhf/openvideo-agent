@@ -1,0 +1,11 @@
+node_modules/
+dist/
+renders/
+evidence/
+out/
+__pycache__/
+*.pyc
+assets/voice/
+assets/master.wav
+assets/music.wav
+.orchestrator/

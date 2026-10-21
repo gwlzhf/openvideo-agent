@@ -1,0 +1,9 @@
+{
+  "name": "openvideo-agent",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "msedge-tts": "2.1.0"
+  }
+}
