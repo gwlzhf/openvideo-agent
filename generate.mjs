@@ -258,6 +258,9 @@ function writeProject(spec, specDir, out, aspect) {
   if (!isFile(style)) die(`unknown music style "${musicStyle}"; see templates/music/README.md`);
   copyFileSync(style, path.join(out, 'assets', 'music', 'make-music.mjs'));
   copyFileSync(path.join(HERE, 'templates', 'music', 'audio-kit.mjs'), path.join(out, 'assets', 'music', 'audio-kit.mjs'));
+  // styles that play drum one-shots (groove) read them from assets/drums; the kit ships with the templates
+  const drums = path.join(HERE, 'templates', 'music', 'drums');
+  if (existsSync(drums)) cpSync(drums, path.join(out, 'assets', 'drums'), {recursive: true});
   const music = spawnSync(process.execPath, ['assets/music/make-music.mjs', 'assets/music.wav', 'plan.json'],
     {cwd: out, stdio: 'inherit', env: process.env});
   if (music.status !== 0) die('music generation failed (make-music.mjs)');
