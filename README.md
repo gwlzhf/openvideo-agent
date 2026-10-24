@@ -6,7 +6,7 @@
 
 ## 快速开始
 
-依赖：Node 22+（在仓库根目录 `npm install`，安装 msedge-tts）、FFmpeg（含 libass）。Windows 需要 Git for Windows（提供 bash）。
+依赖：Node 22+、Python 3（在仓库根目录 `pip install -r scripts/requirements-voice.txt`，安装 edge-tts）、FFmpeg（含 libass）。Windows 需要 Git for Windows（提供 bash）。
 
 ```sh
 node generate.mjs examples/spec.example.json -o out          # 只生成工程

@@ -1,19 +1,21 @@
 #!/usr/bin/env node
-// Narration for a video project: Edge TTS voice, ASS and SRT subtitles, ducked mix, burned-in subtitles.
+// Narration for a video project: Edge TTS voice (scripts/synth-voice.py), ASS and SRT subtitles, ducked mix, burned-in subtitles.
 //   node scripts/make-voice.mjs <video-dir>
 // Reads  : <video-dir>/plan.json (shot start/end), <video-dir>/narration.json, <video-dir>/renders/final.mp4
 //          narration.json = {"voice": "zh-CN-XiaoxiaoNeural", "rate": "+5%", "lines": {"<shot id>": "<text>"}}
 // Writes : assets/voice/<shot>.mp3, assets/voice/narration.wav, assets/voice/narration.ass (+ .srt for reference),
 //          renders/final-narrated.mp4 (voice mixed in, music ducked),
 //          renders/final-narrated-sub.mp4 (subtitles burned in; this is the deliverable)
-// Needs  : npm install (msedge-tts), ffmpeg with libass and sidechaincompress.
+// Needs  : Python 3 with edge-tts (pip install -r scripts/requirements-voice.txt), ffmpeg with libass and sidechaincompress.
+//          PYTHON=<interpreter> overrides the default python / python3.
 // Text is sent to Microsoft's online TTS service; keep narration to product copy only.
 import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
-import {MsEdgeTTS, OUTPUT_FORMAT} from 'msedge-tts';
 import {encodeWav} from '../templates/music/audio-kit.mjs';
 import {capture, run, succeeds} from './lib/run.mjs';
 
+const SYNTH = path.join(import.meta.dirname, 'synth-voice.py');
+const PYTHON = process.env.PYTHON ?? (process.platform === 'win32' ? 'python' : 'python3');
 const SR = 44100;
 const LEAD = 0.45;          // speak after the headline has started to appear
 const TAIL = 0.25;          // keep the subtitle on screen a little after speech ends
@@ -70,14 +72,6 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 `;
 }
 
-// One TTS request per line, streamed to an MP3 file.
-async function synth(tts, text, out, rate) {
-  const {audioStream} = tts.toStream(text, {rate});
-  const chunks = [];
-  for await (const chunk of audioStream) chunks.push(chunk);
-  writeFileSync(out, Buffer.concat(chunks));
-}
-
 // Decodes an audio file to interleaved stereo float32 samples at SR.
 function decode(file) {
   const raw = capture('ffmpeg', ['-v', 'error', '-i', file, '-f', 'f32le', '-ac', '2', '-ar', String(SR), '-']);
@@ -111,33 +105,32 @@ function encoderArgs() {
   return ok ? gpu : cpu;
 }
 
-async function main(rootArg) {
+function main(rootArg) {
   const root = path.resolve(rootArg);
   const cfg = JSON.parse(readFileSync(path.join(root, 'narration.json'), 'utf8'));
-  const voiceName = cfg.voice ?? 'zh-CN-XiaoxiaoNeural';
-  const rate = cfg.rate ?? '+5%';
   const lines = cfg.lines;
   const plan = JSON.parse(readFileSync(path.join(root, 'plan.json'), 'utf8'));
   const dur = Number(plan.duration);
   const shots = Object.fromEntries(plan.shots.map(s => [s.id, s]));
+  for (const sid of Object.keys(lines)) {
+    if (!shots[sid]) throw new Error(`narration.json: unknown shot id "${sid}" (plan.json has ${Object.keys(shots).join(', ')})`);
+  }
   checkPrivacy(root, Object.values(lines));
 
   const voiceDir = path.join(root, 'assets', 'voice');
   mkdirSync(voiceDir, {recursive: true});
+  // one TTS request per line, written to assets/voice/<shot>.mp3 by the Python script
+  run(PYTHON, [SYNTH, root]);
   const frames = Math.round(dur * SR);
   const track = [new Float32Array(frames), new Float32Array(frames)];
   const assEvents = [];
   const srtBlocks = [];
 
-  const tts = new MsEdgeTTS();
-  await tts.setMetadata(voiceName, OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3);
   let n = 0;
   for (const [sid, text] of Object.entries(lines)) {
     n += 1;
-    if (!shots[sid]) throw new Error(`narration.json: unknown shot id "${sid}" (plan.json has ${Object.keys(shots).join(', ')})`);
     const shot = shots[sid];
     const mp3 = path.join(voiceDir, `${sid}.mp3`);
-    await synth(tts, text, mp3, rate);
     const clip = decode(mp3);
     const clipFrames = clip.length / 2;
     const start = shot.start + LEAD;
@@ -156,7 +149,6 @@ async function main(rootArg) {
     srtBlocks.push(`${n}\n${tsSrt(start)} --> ${tsSrt(end)}\n${text}\n`);
     console.log(`${sid}: ${length.toFixed(2)}s at ${start.toFixed(2)}s`);
   }
-  tts.close();
 
   let peak = 0;
   for (const channel of track) for (const x of channel) peak = Math.max(peak, Math.abs(x));
@@ -183,7 +175,9 @@ async function main(rootArg) {
   console.log(`wrote ${path.basename(mixed)} and ${path.basename(subbed)}`);
 }
 
-main(process.argv[2] ?? '.').catch(err => {
+try {
+  main(process.argv[2] ?? '.');
+} catch (err) {
   console.error(`error: ${err.message}`);
   process.exit(1);
-});
+}

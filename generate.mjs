@@ -3,7 +3,7 @@
 //
 //   node generate.mjs spec.json -o out                  write the video projects (out/vertical, out/landscape)
 //   node generate.mjs spec.json -o out --run            ... and build, render, mix and narrate
-//                                                       (needs Node, ffmpeg, bash; npm install for msedge-tts)
+//                                                       (needs Node, ffmpeg, bash, Python with edge-tts)
 //   node generate.mjs spec.json -o out --aspect landscape
 //
 // See README.md for the spec format and examples/spec.example.json for a complete example.
